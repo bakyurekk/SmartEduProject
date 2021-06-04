@@ -4,9 +4,23 @@ const app = express();
 
 const PORT = 3000;
 
-app.get('/', (req, res) => {
-  res.status(200).send('INDEX SAYFASI');
-});
+
+//ROUTERS
+const pageRouters = require('./routes/pageRoute');
+
+// TEMPLATE ENGİNE
+app.set('view engine', 'ejs');
+
+
+//Midelewares
+app.use(express.static('public'));
+
+
+//ROUTERS
+app.use(pageRouters);
+
+
+
 
 app.listen(PORT, () => {
   console.log(`App started on port ${PORT}`);
