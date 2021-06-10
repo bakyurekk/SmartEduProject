@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const pageRouters = require('./routes/pageRoute');
-const courseRouter = require('./routes/courseRoute');
+const pageRoute = require('./routes/pageRoute');
+const courseRoute = require('./routes/courseRoute');
+const categoryRoute = require('./routes/categoryRoute');
+const userRoute = require('./routes/userRoute');
 
 const app = express();
 
@@ -29,8 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //ROUTERS
-app.use(pageRouters);
-app.use(courseRouter);
+app.use(pageRoute);
+app.use(courseRoute);
+app.use(categoryRoute);
+app.use(userRoute);
 
 const PORT = 3000;
 app.listen(PORT, () => {
