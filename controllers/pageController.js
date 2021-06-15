@@ -1,4 +1,5 @@
 exports.getIndexPage = (req, res) => {
+  console.log(req.session.userId);
   res.status(200).render('index', {
     pageName: 'index',
   });
@@ -10,11 +11,6 @@ exports.getAboutPage = (req, res) => {
   });
 };
 
-exports.getDashboardPage = (req, res) => {
-  res.status(200).render('dashboard', {
-    pageName: 'dashboard',
-  });
-};
 
 exports.getContactPage = (req, res) => {
   res.status(200).render('contact', {

@@ -24,7 +24,8 @@ exports.loginUser = async (req, res) => {
         bcrypt.compare(password, user.password, (err, same) => {
           if (same) {
             // User SESSION
-            res.status(200).send('YOU ARE LOGGED IN');
+            req.session.userId = user._id;
+            res.status(200).redirect('/users/dashboard');
           }
         });
       }
@@ -35,4 +36,18 @@ exports.loginUser = async (req, res) => {
       error,
     });
   }
+};
+
+exports.logoutUser = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+};
+
+exports.getDashboardPage = async (req, res) => {
+  const user = await User.findOne({ _id: req.session.userId });
+  res.status(200).render('dashboard', {
+    pageName: 'dashboard',
+    user,
+  });
 };
