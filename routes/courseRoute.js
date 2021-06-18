@@ -11,5 +11,5 @@ router.post(
   courseController.createCourse
 );
 router.post('/courses/enroll', courseController.enrollCourse);
-
+router.post('/courses/release', courseController.releaseCourse);
 module.exports = router;
