@@ -404,7 +404,7 @@
           <tr>
             <th scope="row"><%=users[i]._id %></th>
             <td><%=users[i].email %></td>
-            <td><%=users[i].role %></td>
+            <td><span class="text-uppercase"><%=users[i].role %></span></td>
             <td>
               <a
                 href="/users/<%= users[i]._id %>?_method=DELETE"
