@@ -421,13 +421,6 @@
     <!-- end row -->
 
     <div class="row mt-5">
-      <div class="col-md-12">
-        <% if (flashMessages) { %> <% if (flashMessages.success) { %>
-        <div class="alert alert-success"><%= flashMessages.success %></div>
-        <% } else if (flashMessages.error) { %>
-        <div class="alert alert-danger"><%= flashMessages.error %></div>
-        <% } %> <% } %>
-      </div>
       <div class="col-md-2 text-center">
         <h2>Categories</h2>
       </div>
@@ -447,7 +440,7 @@
           <tr>
             <th scope="col">ID#</th>
             <th scope="col">Name</th>
-            <th scope="col"></th>
+            <th scope="col">Update</th>
             <th scope="col">Delete</th>
           </tr>
         </thead>
@@ -456,7 +449,15 @@
           <tr>
             <th scope="row"><%=categories[i]._id %></th>
             <td><%=categories[i].name %></td>
-            <td>Add</td>
+            <td>
+              <a
+                class="btn btn-primary rounded-0 text-white"
+                data-toggle="modal"
+                data-target="#updateCategories<%= categories[i]._id %>"
+              >
+                <span>Update</span>
+              </a>
+            </td>
             <td>
               <a
                 href="/categories/<%= categories[i]._id %>?_method=DELETE"
@@ -527,4 +528,60 @@
   </div>
 </div>
 
-<% } %> <% } %> <%- include('partials/_footer.ejs') %>
+<!-- Edit Modal -->
+<% for (let i=0; i< categories.length; i++) { %>
+<div
+  class="modal fade"
+  id="updateCategories<%= categories[i]._id %>"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body customer-box">
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="tab-pane active" id="Login">
+            <form
+              method="POST"
+              action="/categories/<%= categories[i].slug   %>?_method=PUT"
+              class="form-horizontal"
+            >
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <input
+                    type="text"
+                    name="name"
+                    value="<%= categories[i].name %>"
+                    class="form-control"
+                    placeholder="Course Name"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-10">
+                  <button
+                    type="submit"
+                    class="btn btn-light btn-radius btn-brd grd1"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-light btn-radius btn-brd grd1"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %> <% } %> <% } %> <%- include('partials/_footer.ejs') %>
