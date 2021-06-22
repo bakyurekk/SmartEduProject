@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
+
 const User = require('../models/User');
 const Category = require('../models/Category');
 const Course = require('../models/Course');
-
-
 
 exports.getDashboardPage = async (req, res) => {
   const user = await User.findOne({ _id: req.session.userId }).populate(
@@ -11,28 +11,45 @@ exports.getDashboardPage = async (req, res) => {
   );
   const categories = await Category.find();
   const courses = await Course.find({ user: req.session.userId });
-
+  const users = await User.find();
   res.status(200).render('dashboard', {
     pageName: 'dashboard',
     user,
     categories,
     courses,
+    users,
   });
 };
-
 
 exports.createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.status(201).redirect('/login');
   } catch (error) {
+    const errors = validationResult(req);
+    console.log(errors);
+    console.log(errors.array()[0].msg);
+
+    for (let i = 0; i < errors.array().length; i++) {
+      req.flash('error', `${errors.array()[i].msg} `);
+    }
+    res.status(400).redirect('/register');
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findOneAndRemove(req.params.id);
+    await Course.deleteMany({ user: req.params.id });
+    req.flash('error', `${user.name} has been remove successfully`);
+    res.status(200).redirect('/users/dashboard');
+  } catch (error) {
     res.status(400).json({
-      message: 'Bed request',
+      status: 'fail',
       error,
     });
   }
 };
-
 
 exports.loginUser = async (req, res) => {
   try {
@@ -40,10 +57,18 @@ exports.loginUser = async (req, res) => {
     await User.findOne({ email: email }, (err, user) => {
       if (user) {
         bcrypt.compare(password, user.password, (err, same) => {
-          // User SESSION
-          req.session.userId = user._id;
-          res.status(200).redirect('/users/dashboard');
+          if (same) {
+            // User SESSION
+            req.session.userId = user._id;
+            res.status(200).redirect('/users/dashboard');
+          } else {
+            req.flash('error', 'Your Password is not correct');
+            res.status(400).redirect('/login');
+          }
         });
+      } else {
+        req.flash('error', 'User is not exist');
+        res.status(400).redirect('/login');
       }
     });
   } catch (error) {
@@ -59,4 +84,3 @@ exports.logoutUser = (req, res) => {
     res.redirect('/');
   });
 };
-
